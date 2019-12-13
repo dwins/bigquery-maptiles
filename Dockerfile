@@ -1,11 +1,7 @@
 FROM ubuntu:19.04
 RUN apt-get update && \
     apt-get install -y gdal-bin vim git build-essential libsqlite3-dev \
-	    zlib1g-dev golang-go curl python
-
-# Install jsonnet cli tool.
-ENV GOPATH /usr/local
-RUN go get github.com/google/go-jsonnet/cmd/jsonnet
+	    zlib1g-dev golang-go curl python csvkit
 
 # Create a directory for tippecanoe sources.
 RUN mkdir -p /tmp/tippecanoe-src
@@ -22,8 +18,8 @@ RUN rm -rf /tmp/tippecanoe-src \
 
 # Copy scripts to generate maptiles.
 RUN mkdir -p /maptiles
-COPY prep-geojson-input.sh /maptiles
-COPY query.sql /maptiles
+COPY prep-geojson-input-bq2tiles_ogrxsv.sh /maptiles
+COPY query-bqsj.sql /maptiles
 COPY convert.jsonnet /maptiles
 COPY example.html /maptiles
 WORKDIR /maptiles
