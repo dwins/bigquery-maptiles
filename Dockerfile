@@ -1,6 +1,6 @@
 FROM ubuntu:19.04
-RUN apt-get update && \
-    apt-get install -y gdal-bin vim git build-essential libsqlite3-dev \
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
+    apt-get install -yq gdal-bin vim git build-essential libsqlite3-dev \
 	    zlib1g-dev golang-go curl python csvkit
 
 # Create a directory for tippecanoe sources.
