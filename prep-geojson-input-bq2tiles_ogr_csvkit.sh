@@ -9,7 +9,7 @@ PROJECT=${1:?Please provide a GCP project for tile upload}
 
 # Run bq query with generous row limit.
 # NOTE: bq converts all types to strings, including ints and floats. 
-cat query.sql | bq --project measurement-lab query --format=csv \
+cat query-bqsj.sql | bq --project measurement-lab query --format=csv \
     --nouse_legacy_sql --max_rows=4000000 > results.csv
 
 #csvkit for telling ogr&tippecanoe what the field types are
