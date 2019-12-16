@@ -18,7 +18,7 @@ RUN rm -rf /tmp/tippecanoe-src \
 
 # Copy scripts to generate maptiles.
 RUN mkdir -p /maptiles
-COPY prep-geojson-input-bq2tiles_ogrxsv.sh /maptiles
+COPY prep-geojson-input-bq2tiles_ogr_csvkit.sh /maptiles
 COPY query-bqsj.sql /maptiles
 COPY convert.jsonnet /maptiles
 COPY example.html /maptiles
