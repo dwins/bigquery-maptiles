@@ -1,7 +1,16 @@
 FROM ubuntu:19.04
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -yq gdal-bin vim git build-essential libsqlite3-dev \
-	    zlib1g-dev golang-go curl python csvkit
+	    zlib1g-dev golang-go curl python
+
+# Install Rust & xsv
+RUN mkdir -p /tmp/rust
+WORKDIR /tmp/rust
+RUN curl https://sh.rustup.rs -sSf | sh
+WORKDIR /
+RUN export PATH=$PATH:~/.cargo/bin
+RUN cargo install xsv
+RUN rm -rf /tmp/rust
 
 # Create a directory for tippecanoe sources.
 RUN mkdir -p /tmp/tippecanoe-src
