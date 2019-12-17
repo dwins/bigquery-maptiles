@@ -6,9 +6,11 @@ RUN apt-get update && \
 # Install Rust & xsv
 RUN mkdir -p /tmp/rust
 WORKDIR /tmp/rust
-RUN curl https://sh.rustup.rs -sSf | sh
+RUN curl https://sh.rustup.rs -sSf > rustup-init.sh
+RUN chmod +x rustup-init.sh
+RUN ./rustup-init.sh -y
 WORKDIR /
-RUN export PATH=$PATH:~/.cargo/bin
+ENV PATH=/root/.cargo/bin:${PATH}
 RUN cargo install xsv
 RUN rm -rf /tmp/rust
 
