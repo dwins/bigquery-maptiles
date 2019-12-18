@@ -35,4 +35,4 @@ RUN gcloud config set project measurement-lab
 # generates an unconditional "Welcome to BigQuery!" preamble message, which
 # corrupts the remaining json output. The following command attempts to list a
 # fake dataset which runs through the auth initialization and welcome message.
-RUN bq --headless --project measurement-lab ls fake-dataset &> /dev/null || :
+RUN bq --headless --project_id measurement-lab ls fake-dataset &> /dev/null || :

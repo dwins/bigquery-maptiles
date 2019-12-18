@@ -11,7 +11,7 @@ Generate input data:
 ```sh
 docker run -e PROJECT=mlab-sandbox -v $PWD:/maptiles \
     -v ~/.config/gcloud:/root/.config/gcloud -it bigquery-maptiles \
-    ./prep-geojson-input.sh mlab-sandbox
+    ./prep-geojson-input-bq2tiles_ogr_csvkit.sh mlab-sandbox
 ```
 
 NOTE: if the html and tiles are served from different domains we'll need to
