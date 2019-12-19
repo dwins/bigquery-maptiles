@@ -3,15 +3,17 @@
 Build container:
 
 ```sh
-docker build -t bigquery-maptiles .
+docker build -f Dockerfile_ogr_csvkit -t bigquery-maptiles .
 ```
 
 Generate input data:
 
 ```sh
-docker run -e PROJECT=mlab-sandbox -v $PWD:/maptiles \
-    -v ~/.config/gcloud:/root/.config/gcloud -it bigquery-maptiles \
-    ./prep-geojson-input-bq2tiles_ogr_csvkit.sh mlab-sandbox
+docker run -e PROJECT=mlab-sandbox -v $PWD/geo:/geo \
+  -v $PWD/maptiles:/maptiles -v $PWD/queries:/queries \
+  -v $PWD/schemas:/schemas -v $PWD/scripts:/scripts \
+  -v $PWD/templates:/templates -v /home/critzo/.config/gcloud:/root/.config/gcloud \
+  -it bigquery-maptiles scripts/prep-geojson-input-bq2tiles_ogr_csvkit.sh mlab-sandbox
 ```
 
 NOTE: if the html and tiles are served from different domains we'll need to

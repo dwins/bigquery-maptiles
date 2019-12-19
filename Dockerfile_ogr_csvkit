@@ -16,14 +16,6 @@ WORKDIR /
 RUN rm -rf /tmp/tippecanoe-src \
   && apt-get -y remove --purge build-essential && apt-get -y autoremove
 
-# Copy scripts to generate maptiles.
-RUN mkdir -p /maptiles
-COPY scripts/prep-geojson-input-bq2tiles_ogr_csvkit.sh /maptiles
-COPY queries/query-bqsj.sql /maptiles
-COPY templates/convert.jsonnet /maptiles
-COPY maptiles/example.html /maptiles
-WORKDIR /maptiles
-
 # Install gcloud SDK and command line tools.
 RUN curl https://sdk.cloud.google.com | bash
 ENV PATH="/root/google-cloud-sdk/bin:${PATH}"

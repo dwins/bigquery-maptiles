@@ -111,10 +111,10 @@ ul_agg AS (
 ),
 summary AS (
   SELECT
-    geo_id AS sum_geoid, county_name, year_month, MIN_download_Mbps, LOWER_QUARTILE_download_Mbps, MED_download_Mbps,
+    geo_id AS county_geoid, county_name, year_month, MIN_download_Mbps, LOWER_QUARTILE_download_Mbps, MED_download_Mbps,
     UPPER_QUARTILE_download_Mbps, MAX_download_Mbps, AVG_download_Mbps, MED_min_rtt, MIN_upload_Mbps, LOWER_QUARTILE_upload_Mbps, 
     MED_upload_Mbps, UPPER_QUARTILE_upload_Mbps, MAX_upload_Mbps, AVG_upload_Mbps
   FROM
   dl_agg JOIN ul_agg USING (geo_id, county_name, year_month)
 )
-SELECT * FROM summary JOIN counties ON summary.sum_geoid = counties.geo_id
+SELECT * FROM summary JOIN counties ON summary.county_geoid = counties.geo_id
