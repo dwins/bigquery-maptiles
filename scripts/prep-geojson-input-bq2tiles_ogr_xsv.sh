@@ -11,23 +11,24 @@ PROJECT=${1:?Please provide a GCP project for tile upload}
 bq mk --table --expiration 3600 --description "temp table for bq2maptiles process" \
 	mlab-sandbox:critzo.nc_counties schemas/nc_counties_spjoin.json
 
-# Run bq query with generous row limit. Write results to temp table created above.
-# NOTE: bq converts all types to strings, including ints and floats.
-cat queries/query-bqsj.sql | bq --project_id measurement-lab query \
+# Series of several commands below tied together with && so the previous command must finish
+# successfully before proceeding. 
+# - Run bq query with generous row limit. Write results to temp table created above.
+#   NOTE: bq converts all types to strings, including ints and floats.
+# - Extract contents of the temp table to a gcs storage location, using wildcard sharding
+#   to accomodate large results.
+# - Merge sharded results into one CSV
+# - Download the merged CSV locally to use to generate tiles.
+
+bq --project_id measurement-lab query \
 	--allow_large_results --destination_table mlab-sandbox:critzo.nc_counties \
-    --replace --use_legacy_sql=false --max_rows=4000000 
-
-# Extract contents of the temp table to a gcs storage location, using wildcard sharding
-# to accomodate large results.
-bq extract --destination_format CSV 'mlab-sandbox:critzo.nc_counties' \
-	gs://bigquery-maptiles-mlab-sandbox/csv/nc_counties_*.csv
-
-# Merge sharded results into one CSV
-gsutil compose gs://bigquery-maptiles-mlab-sandbox/csv/nc_counties_* \
-	gs://bigquery-maptiles-mlab-sandbox/csv/nc_counties_merged.csv
-
-# Download the merged CSV locally to use to generate tiles.
-gsutil cp gs://bigquery-maptiles-mlab-sandbox/csv/nc_counties_merged.csv maptiles/results.csv
+    --replace --use_legacy_sql=false --max_rows=4000000 `cat queries/query-bqsj.sql` && \
+    bq extract --destination_format CSV 'mlab-sandbox:critzo.nc_counties' \
+    gs://bigquery-maptiles-mlab-sandbox/csv/nc_counties_*.csv && \
+    gsutil compose gs://bigquery-maptiles-mlab-sandbox/csv/nc_counties_* \
+    gs://bigquery-maptiles-mlab-sandbox/csv/nc_counties_merged.csv && \
+    gsutil cp gs://bigquery-maptiles-mlab-sandbox/csv/nc_counties_merged.csv \
+    maptiles/results.csv
 
 # Cleanup the files on GCS because we don't need them there anymore.
 #sutil rm gs://bigquery-maptiles-mlab-sandbox/csv/nc_counties_*
