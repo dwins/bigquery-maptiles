@@ -27,7 +27,10 @@ gsutil compose gs://bigquery-maptiles-mlab-sandbox/csv/nc_counties_* \
 	gs://bigquery-maptiles-mlab-sandbox/csv/nc_counties_merged.csv
 
 # Download the merged CSV locally to use to generate tiles.
-gsutil cp gs://bigquery-maptiles-mlab-sandbox/csv/nc_counties_merged.csv ./results.csv
+gsutil cp gs://bigquery-maptiles-mlab-sandbox/csv/nc_counties_merged.csv maptiles/results.csv
+
+# Cleanup the files on GCS because we don't need them there anymore.
+#sutil rm gs://bigquery-maptiles-mlab-sandbox/csv/nc_counties_*
 
 # For geo-joining using a shapefile and results using ogr2ogr
 #ogr2ogr -f GeoJSON nc_2018_county.geojson geo/north_carolina_county_cb2018_500k.shp
@@ -35,16 +38,18 @@ gsutil cp gs://bigquery-maptiles-mlab-sandbox/csv/nc_counties_merged.csv ./resul
 #	"SELECT * FROM results c JOIN 'geo/north_carolina_county_cb2018_500k.shp'.north_carolina_county_cb2018_500k s on c.geo_id = s.GEOID"
 
 # ogr2ogr+tippecanoe to handle the csv > tiles
-ogr2ogr -f GeoJSON /dev/stdout \
-  -oo KEEP_GEOM_COLUMNS=no \
-  results.csv | \
-  tippecanoe -e maptiles/nc_counties -f -l nc_counties /dev/stdin -z6 \
-  --simplification=10 --detect-shared-borders \
-  --coalesce-densest-as-needed --no-tile-compression
+#ogr2ogr -f GeoJSON /dev/stdout \
+#  -oo KEEP_GEOM_COLUMNS=no \
+#  results.csv | \
+#  tippecanoe -o maptiles/mlab_nc_2018_county.mbtiles \
+#  -l mlab_nc_2018_county /dev/stdin -zg
+#  tippecanoe -e maptiles/nc_counties -f -l nc_counties /dev/stdin -z6 \
+#  --simplification=10 --detect-shared-borders \
+#  --coalesce-densest-as-needed --no-tile-compression
 
 #upload to cloud storage box
-gsutil -m -h 'Cache-Control:private, max-age=0, no-transform' \
-  cp -r maptiles/example.html maptiles/nc_counties gs://bigquery-maptiles-${PROJECT}/
+#gsutil -m -h 'Cache-Control:private, max-age=0, no-transform' \
+#  cp -r maptiles/* gs://bigquery-maptiles-${PROJECT}/
 
 # NOTE: if the html and tiles are served from different domains we'll need to
 # apply a CORS policy to GCS.

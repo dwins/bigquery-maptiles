@@ -1,19 +1,25 @@
 # bigquery-maptiles
 
-Build container:
+Build container to use csvkit:
 
 ```sh
-docker build -f Dockerfile_ogr_csvkit -t bigquery-maptiles .
+docker build -f Dockerfile_ogr_csvkit -t bigquery-maptiles-csvkit .
 ```
 
-Generate input data:
+Or build container to use xsv:
+
+```sh
+docker build -f Dockerfile_ogr_xsv -t bigquery-maptiles-xsv .
+```
+
+Generate input data using xsv:
 
 ```sh
 docker run -e PROJECT=mlab-sandbox -v $PWD/geo:/geo \
   -v $PWD/maptiles:/maptiles -v $PWD/queries:/queries \
   -v $PWD/schemas:/schemas -v $PWD/scripts:/scripts \
   -v $PWD/templates:/templates -v /home/critzo/.config/gcloud:/root/.config/gcloud \
-  -it bigquery-maptiles scripts/prep-geojson-input-bq2tiles_ogr_csvkit.sh mlab-sandbox
+  -it bigquery-maptiles-xsv scripts/prep-geojson-input-bq2tiles_ogr_xsv.sh mlab-sandbox
 ```
 
 NOTE: if the html and tiles are served from different domains we'll need to
