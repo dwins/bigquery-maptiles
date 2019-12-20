@@ -22,7 +22,7 @@ bq mk --table --expiration 3600 --description "temp table for bq2maptiles proces
 
 bq --project_id measurement-lab query \
 	--allow_large_results --destination_table mlab-sandbox:critzo.nc_counties \
-    --replace --use_legacy_sql=false --max_rows=4000000 `cat queries/query-bqsj.sql` && \
+    --replace --use_legacy_sql=false --max_rows=4000000 "`cat queries/query-bqsj.sql`" && \
     bq extract --destination_format CSV 'mlab-sandbox:critzo.nc_counties' \
     gs://bigquery-maptiles-mlab-sandbox/csv/nc_counties_*.csv && \
     gsutil compose gs://bigquery-maptiles-mlab-sandbox/csv/nc_counties_* \
